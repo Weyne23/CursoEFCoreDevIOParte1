@@ -14,8 +14,8 @@ namespace curso.Data
         {
             const string strConection = "Data source=(localdb)\\mssqllocaldb;Initial Catalog=C002;Integrated Security=true;pooling=true";
             optionsBuilder.UseSqlServer(strConection)
-            .EnableSensitiveDataLogging();
-            //.LogTo(Console.WriteLine, LogLevel.Information);
+            .EnableSensitiveDataLogging()
+            .LogTo(Console.WriteLine, LogLevel.Information);
         }
     }
 }
