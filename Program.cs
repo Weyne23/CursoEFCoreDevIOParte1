@@ -25,7 +25,15 @@ namespace DominandoEFCore
             //MigracoesPendentes();
             //AplicarMigrationEmTempodeExecucao();
             //TodasMigracoes();
-            MigracoesJaAplicadas();
+            //MigracoesJaAplicadas();
+            ScriptGeraldoBancodeDados();
+        }
+        static void ScriptGeraldoBancodeDados()
+        {
+            using var db = new curso.Data.ApplicationContext();
+            var script = db.Database.GenerateCreateScript();
+
+            Console.WriteLine(script);
         }
         static void MigracoesJaAplicadas()
         {
