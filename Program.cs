@@ -16,13 +16,53 @@ namespace DominandoEFCore
             //HealthCkeckNamcoDeDados();
 
             //warmup
-            new curso.Data.ApplicationContext().Departamentos.Any();
-            _count = 0;
-            GarenciarEstadoDaConexao(false);
-            _count = 0;
-            GarenciarEstadoDaConexao(true);
+            // new curso.Data.ApplicationContext().Departamentos.Any();
+            // _count = 0;
+            // GarenciarEstadoDaConexao(false);
+            // _count = 0;
+            // GarenciarEstadoDaConexao(true);
+            //SqlInjection();
+            MigracoesPendentes();
         }
 
+        static void MigracoesPendentes()
+        {
+            using var db = new curso.Data.ApplicationContext();
+
+            var migrations = db.Database.GetPendingMigrations();
+
+            Console.WriteLine($"Total: {migrations.Count()}");
+
+            foreach (var migration in migrations)
+            {
+                Console.WriteLine($"Migração: {migration}");
+            }
+        }
+        static void SqlInjection()
+        {
+            using var db = new curso.Data.ApplicationContext();
+            db.Database.EnsureDeleted();
+            db.Database.EnsureCreated();
+
+            db.Departamentos.AddRange(
+                new curso.Domain.Departamento
+                {
+                    Descricao = "Departamento 01"
+                },
+                new curso.Domain.Departamento
+                {
+                    Descricao = "Departamento 02"
+                }
+            );
+            db.SaveChanges();
+
+            var descricao = "Teste ' or 1='1";
+            db.Database.ExecuteSqlRaw($"update Departamentos set Descricao = 'Departamento Alterado' where Descricao = '{descricao}'");
+            foreach(var departamento in db.Departamentos.AsNoTracking())
+            {
+                Console.WriteLine($"Id: {departamento.Id}, Descrição: {departamento.Descricao}");
+            }
+        }
         static void ExecuteSQL()
         {
             using var db = new curso.Data.ApplicationContext();
