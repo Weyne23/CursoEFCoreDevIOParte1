@@ -22,9 +22,43 @@ namespace DominandoEFCore
             // _count = 0;
             // GarenciarEstadoDaConexao(true);
             //SqlInjection();
-            MigracoesPendentes();
+            //MigracoesPendentes();
+            //AplicarMigrationEmTempodeExecucao();
+            //TodasMigracoes();
+            MigracoesJaAplicadas();
         }
+        static void MigracoesJaAplicadas()
+        {
+            using var db = new curso.Data.ApplicationContext();
 
+            var migrations = db.Database.GetAppliedMigrations();
+
+            Console.WriteLine($"Total: {migrations.Count()}");
+
+            foreach (var migration in migrations)
+            {
+                Console.WriteLine($"Migração: {migration}");
+            }
+        }
+        static void TodasMigracoes()
+        {
+            using var db = new curso.Data.ApplicationContext();
+
+            var migrations = db.Database.GetMigrations();
+
+            Console.WriteLine($"Total: {migrations.Count()}");
+
+            foreach (var migration in migrations)
+            {
+                Console.WriteLine($"Migração: {migration}");
+            }
+        }
+        static void AplicarMigrationEmTempodeExecucao()
+        {
+            using var db = new curso.Data.ApplicationContext();
+
+            db.Database.Migrate();
+        }
         static void MigracoesPendentes()
         {
             using var db = new curso.Data.ApplicationContext();
@@ -102,7 +136,6 @@ namespace DominandoEFCore
 
             Console.WriteLine(mensagem);
         }
-
         static void HealthCkeckNamcoDeDados()
         {
             using var db = new curso.Data.ApplicationContext();
@@ -132,7 +165,6 @@ namespace DominandoEFCore
             //     Console.WriteLine("Não Conectou");
             // }
         }
-
         static void EnsureCreateAndDeleted()
         {
             using var db = new curso.Data.ApplicationContext();
@@ -140,7 +172,6 @@ namespace DominandoEFCore
             db.Database.EnsureCreated();
             //db.Database.EnsureDeleted();
         }
-
         static void GapDoEnsureCreated()
         {
             using var db1 = new curso.Data.ApplicationContext();
