@@ -12,10 +12,10 @@ namespace curso.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            const string strConection = "Data source=(localdb)\\mssqllocaldb; Initial Cotalog=C002;Integrated Security=true;polling=true";
+            const string strConection = "Data source=(localdb)\\mssqllocaldb;Initial Catalog=C002;Integrated Security=true;pooling=true";
             optionsBuilder.UseSqlServer(strConection)
-            .EnableSensitiveDataLogging()
-            .LogTo(Console.WriteLine, LogLevel.Information);
+            .EnableSensitiveDataLogging();
+            //.LogTo(Console.WriteLine, LogLevel.Information);
         }
     }
 }
