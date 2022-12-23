@@ -28,9 +28,35 @@ namespace DominandoEFCore
             //MigracoesJaAplicadas();
             //ScriptGeraldoBancodeDados();
             //CarregamentoAdiantado();
-            CarregamentoExplicito();
+            //CarregamentoExplicito();
+            CarregamentoLento();
         }
+    static void CarregamentoLento()
+        {
+            using var db = new curso.Data.ApplicationContext();
+            SetupTipoCarregamento(db);
 
+            //db.ChangeTracker.LazyLoadingEnabled = false;
+            var departamentos = db.Departamentos.ToList();
+
+            foreach (var departamento in departamentos)
+            {
+                Console.WriteLine("--------------------------------------");
+                Console.WriteLine($"Departamento: {departamento.Descricao}");
+
+                if(departamento.Funcionarios?.Any() ?? false)
+                {
+                    foreach (var funcionario in departamento.Funcionarios)
+                    {
+                        Console.WriteLine($"Funcionario: {funcionario.Nome}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"\tNenhum funcionario encontrado!");
+                }
+            }
+        }
         static void CarregamentoExplicito()
         {
             using var db = new curso.Data.ApplicationContext();
@@ -59,7 +85,6 @@ namespace DominandoEFCore
                 }
             }
         }
-
         static void CarregamentoAdiantado()
         {
             using var db = new curso.Data.ApplicationContext();
@@ -86,7 +111,6 @@ namespace DominandoEFCore
                 }
             }
         }
-
         private static void SetupTipoCarregamento(curso.Data.ApplicationContext db)
         {
             if(!db.Departamentos.Any())
@@ -130,7 +154,6 @@ namespace DominandoEFCore
             db.SaveChanges();
             db.ChangeTracker.Clear();
         }
-
         static void ScriptGeraldoBancodeDados()
         {
             using var db = new curso.Data.ApplicationContext();
