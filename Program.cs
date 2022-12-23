@@ -27,10 +27,40 @@ namespace DominandoEFCore
             //TodasMigracoes();
             //MigracoesJaAplicadas();
             //ScriptGeraldoBancodeDados();
-            carregamentoAdiantado();
+            //CarregamentoAdiantado();
+            CarregamentoExplicito();
         }
 
-        static void carregamentoAdiantado()
+        static void CarregamentoExplicito()
+        {
+            using var db = new curso.Data.ApplicationContext();
+            SetupTipoCarregamento(db);
+
+            var departamentos = db.Departamentos.ToList();
+
+            foreach (var departamento in departamentos)
+            {
+                if(departamento.Id == 2)
+                    //db.Entry(departamento).Collection(x => x.Funcionarios).Load();
+                    db.Entry(departamento).Collection(x => x.Funcionarios).Query().Where(x => x.Id > 2).ToList();
+                Console.WriteLine("--------------------------------------");
+                Console.WriteLine($"Departamento: {departamento.Descricao}");
+
+                if(departamento.Funcionarios?.Any() ?? false)
+                {
+                    foreach (var funcionario in departamento.Funcionarios)
+                    {
+                        Console.WriteLine($"Funcionario: {funcionario.Nome}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"\tNenhum funcionario encontrado!");
+                }
+            }
+        }
+
+        static void CarregamentoAdiantado()
         {
             using var db = new curso.Data.ApplicationContext();
             SetupTipoCarregamento(db);
