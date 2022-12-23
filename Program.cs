@@ -26,8 +26,81 @@ namespace DominandoEFCore
             //AplicarMigrationEmTempodeExecucao();
             //TodasMigracoes();
             //MigracoesJaAplicadas();
-            ScriptGeraldoBancodeDados();
+            //ScriptGeraldoBancodeDados();
+            carregamentoAdiantado();
         }
+
+        static void carregamentoAdiantado()
+        {
+            using var db = new curso.Data.ApplicationContext();
+            SetupTipoCarregamento(db);
+
+            var departamentos = db.Departamentos
+                                  .Include(p => p.Funcionarios);
+
+            foreach (var departamento in departamentos)
+            {
+                Console.WriteLine("--------------------------------------");
+                Console.WriteLine($"Departamento: {departamento.Descricao}");
+
+                if(departamento.Funcionarios?.Any() ?? false)
+                {
+                    foreach (var funcionario in departamento.Funcionarios)
+                    {
+                        Console.WriteLine($"Funcionario: {funcionario.Nome}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"\tNenhum funcionario encontrado!");
+                }
+            }
+        }
+
+        private static void SetupTipoCarregamento(curso.Data.ApplicationContext db)
+        {
+            if(!db.Departamentos.Any())
+            {
+                db.Departamentos.AddRange(
+                    new curso.Domain.Departamento
+                    {
+                        Descricao = "Departamento 01",
+                        Funcionarios = new System.Collections.Generic.List<curso.Domain.Funcionario>
+                        {
+                            new curso.Domain.Funcionario
+                            {
+                                Nome = "Rafael Almeida",
+                                CPF = "99999999911",
+                                RG = "2100062"
+                            }
+                        }
+                    },
+                    new curso.Domain.Departamento
+                    {
+                        Descricao = "Departamento 02",
+                        Funcionarios = new System.Collections.Generic.List<curso.Domain.Funcionario>
+                        {
+                            new curso.Domain.Funcionario
+                            {
+                                Nome = "Bruno Brito",
+                                CPF = "99988999911",
+                                RG = "3100062"
+                            },
+                            new curso.Domain.Funcionario
+                            {
+                                Nome = "Eduardo Pires",
+                                CPF = "99779999911",
+                                RG = "4100062"
+                            }
+                        }
+                    }
+                );
+            }
+
+            db.SaveChanges();
+            db.ChangeTracker.Clear();
+        }
+
         static void ScriptGeraldoBancodeDados()
         {
             using var db = new curso.Data.ApplicationContext();
