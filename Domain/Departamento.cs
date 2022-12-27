@@ -27,7 +27,7 @@ namespace curso.Domain
                 _lazyLoader?.Invoke(this, nameof(Funcionarios));
 
                 return _funcionarios;
-            }//_lazyLoader.Load(this, ref _funcionarios); 
+            } 
             set => _funcionarios = value; 
         }
 
